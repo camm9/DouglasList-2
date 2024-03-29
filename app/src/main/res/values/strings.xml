@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">DouglasList</string>
+    <string name="tvLoginPageTitle">Log In</string>
+    <string name="edTxtEnterEmail">Enter Email</string>
+    <string name="editTxtPasswordLogin">Enter Password</string>
+    <string name="btnLogin">Log In</string>
+    <string name="btnForgotPassword">Forgot Your Password?</string>
+    <string name="tvRegistrationTitle">Sign up</string>
+    <string name="tvRegistrationSubtitle">Create your account</string>
+    <string name="edtTxtSignUpUserName">Username</string>
+    <string name="edtTxtSignUpPassword">Password</string>
+    <string name="edtTxtSignUpFirstName">First Name</string>
+    <string name="edtTxtSignUpLastName">Last Name</string>
+    <string name="edtTxtSignUpAddress">City</string>
+    <string name="edtTxtSignUpPhoneNumber">Phone Number</string>
+    <string name="edtTxtSignUpEmail">Email</string>
+    <string name="btnSignUp">Complete Registration</string>
+    <string name="btnGetStarted">Get Started</string>
+    <string name="btnLoginHomePage">Log In</string>
+    <string name="tvWelcome"><b>Welcome To Douglaslist</b></string>
+    <string name="tvTagline">Your new neighbourhood buy-and-sell</string>
+    <string name="tvHaveAccount">Have an account?</string>
+    <string name="tvForgotPWTitle">Forgot your password?</string>
+    <string name="edTxtForgotUsername">Enter username</string>
+    <string name="btnGeneratePassword">Generate A New Password</string>
+    <string name="tvProfileTitle">Profile</string>
+    <string name="btnEditProfile">Edit Profile</string>
+    <string name="btnProfileLogout">Log Out</string>
+    <string name="imgProfileImg">This is the users profile image</string>
+    <string name="tvProfileAddress">Your Address:</string>
+    <string name="btnChangePW">Change Password</string>
+</resources>
