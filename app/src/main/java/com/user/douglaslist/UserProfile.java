@@ -24,13 +24,14 @@ public class UserProfile extends AppCompatActivity {
         User userProfile = (User) getIntent().getSerializableExtra("userData");
 
         //Check user session is valid
-        SharedPreferences spCheck = getSharedPreferences("DouglasListUserSession", MODE_PRIVATE);
-        Long storedTime = spCheck.getLong("session_expiration",0);
+        SharedPreferences sp= getSharedPreferences("DouglasListUserSession", MODE_PRIVATE);
+        Long storedTime = sp.getLong("session_expiration",0);
         Boolean session = UserLogin.checkSessionToken(storedTime);
         if (!session){
             UserLogin.removeSessionToken(sp);
             startActivity(new Intent(UserProfile.this, MainActivity.class));
         }
+
 
         TextView name = findViewById(R.id.tvProfileName);
         String fullName = userProfile.firstName + " " + userProfile.lastName;
@@ -59,6 +60,16 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UserProfile.this, ChangePassword.class);
+                intent.putExtra("userData", userProfile);
+                startActivity(intent);
+            }
+        });
+
+        Button btnEditProfile = findViewById(R.id.btnEditProfile);
+        btnEditProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserProfile.this, EditProfile.class);
                 intent.putExtra("userData", userProfile);
                 startActivity(intent);
             }

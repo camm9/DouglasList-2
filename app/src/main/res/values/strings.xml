@@ -32,4 +32,6 @@
     <string name="currentPW">Enter Current Password</string>
     <string name="newPW">Enter New Password</string>
     <string name="tvChangePWTitle">Change Your Password</string>
+    <string name="btnUploadPhoto">Upload Photo</string>
+    <string name="btnSavePhoto">Save Photo</string>
 </resources>
