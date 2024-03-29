@@ -62,7 +62,8 @@ public class UserLogin extends AppCompatActivity {
                     BCrypt.Result result = BCrypt.verifyer().verify(passTxt.toCharArray(), retrievedPassword);
 
                     if (result.verified == true){
-                        Toast.makeText(UserLogin.this, "Sign in successful!" , Toast.LENGTH_SHORT).show();// return User object of logged in user
+                        Toast.makeText(UserLogin.this, "Sign in successful!" , Toast.LENGTH_SHORT).show();
+                        // return User object of logged in user
                         User userProfile = dabaseHelper.returnUserProfile(emailTxt);
                         // Store session token
                         String token = generateSessionToken();

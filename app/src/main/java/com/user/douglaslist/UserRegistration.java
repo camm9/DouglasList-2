@@ -113,7 +113,7 @@ public class UserRegistration extends AppCompatActivity {
     the password contains at least one digit, one lowercase letter, one uppercase
     letter, one special character, and is at least 8 characters long.
     */
-    private static boolean isValidPassword (String password){
+    public static boolean isValidPassword (String password){
         final String passwordPattern = ("^" +
                 "(?=.*[A-Z])"+           // at least 1 uppercase
                 "(?=.*[a-z])"+           // at least 1 lowercase

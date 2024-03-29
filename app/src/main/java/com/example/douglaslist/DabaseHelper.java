@@ -15,7 +15,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 public class DabaseHelper extends SQLiteOpenHelper {
 
     final static String DATABASE_NAME = "Douglas.db";
-    final static int DATABASE_VERSION = 1;
+    final static int DATABASE_VERSION = 2;
 
     final static String USER_TABLE = "User";
     final static String T1COL1 = "UserID"; //Primary Key
@@ -113,7 +113,6 @@ public class DabaseHelper extends SQLiteOpenHelper {
     }
     //Update password -- to be used for ForgotPassword feature
     public boolean updatePassword(String email, String newPassword){
-
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 

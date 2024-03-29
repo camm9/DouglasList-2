@@ -54,5 +54,15 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
+        Button btnChangePW = findViewById(R.id.btnChangePW);
+        btnChangePW.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserProfile.this, ChangePassword.class);
+                intent.putExtra("userData", userProfile);
+                startActivity(intent);
+            }
+        });
+
     }
 }

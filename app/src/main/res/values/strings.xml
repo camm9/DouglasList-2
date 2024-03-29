@@ -29,4 +29,7 @@
     <string name="imgProfileImg">This is the users profile image</string>
     <string name="tvProfileAddress">Your Address:</string>
     <string name="btnChangePW">Change Password</string>
+    <string name="currentPW">Enter Current Password</string>
+    <string name="newPW">Enter New Password</string>
+    <string name="tvChangePWTitle">Change Your Password</string>
 </resources>
