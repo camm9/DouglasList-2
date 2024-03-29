@@ -5,9 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.util.Base64;
 import android.util.Log;
 
 import com.user.douglaslist.User;
+
+import java.io.ByteArrayOutputStream;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
@@ -15,7 +19,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 public class DabaseHelper extends SQLiteOpenHelper {
 
     final static String DATABASE_NAME = "Douglas.db";
-    final static int DATABASE_VERSION = 2;
+    final static int DATABASE_VERSION = 3;
 
     final static String USER_TABLE = "User";
     final static String T1COL1 = "UserID"; //Primary Key
@@ -29,7 +33,9 @@ public class DabaseHelper extends SQLiteOpenHelper {
 
     final static String T1COL8 = "Password"; //Foreign Key
 
-
+    final static String PROFILE_TABLE = "Profile";
+    final static String PROFILE_COL1 = "Email";
+    final static String PROFILE_COL2 = "ProfileImage";
 
     public DabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -49,11 +55,17 @@ public class DabaseHelper extends SQLiteOpenHelper {
                 T1COL8 + " TEXT)"; //Password
         db.execSQL(createUserTable);
 
+        String createProfileTable = "CREATE TABLE " + PROFILE_TABLE +
+                "(" + PROFILE_COL1 + " TEXT PRIMARY KEY," + //Email
+                PROFILE_COL2 + " TEXT)"; //ProfileImage
+        db.execSQL(createProfileTable);
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + PROFILE_TABLE);
         onCreate(db);
     }
 
@@ -197,6 +209,40 @@ public class DabaseHelper extends SQLiteOpenHelper {
         activeUser = new User(id,username,firstName,lastName,address,cellPhone,email,password);
 
         return activeUser;
+    }
+
+    //update image to Profile table where user email is
+    public boolean updateImage(Bitmap imageBitmap, String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(PROFILE_COL2, bitmapToBase64(imageBitmap));
+
+        String selection = "Email = ?";
+        String[] selectionArgs = { String.valueOf(email)};
+
+        int rowsAffected = db.update(PROFILE_TABLE, contentValues,selection,selectionArgs);
+        db.close();
+        boolean updateResult = rowsAffected > 0;
+        return updateResult;
+    }
+    //inserts an image into Profile table
+    public boolean insertImage(Bitmap imageBitmap, String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(PROFILE_COL1, email);
+        contentValues.put(PROFILE_COL2, bitmapToBase64(imageBitmap));
+
+        long result = db.insert(PROFILE_TABLE, null, contentValues);
+        if (result == -1) return false;
+        else return true;
+    }
+
+    //Helps import bitmap images to database
+    private String bitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
 }

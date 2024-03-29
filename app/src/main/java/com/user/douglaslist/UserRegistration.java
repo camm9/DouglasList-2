@@ -3,6 +3,9 @@ package com.user.douglaslist;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.util.Patterns;
@@ -92,6 +95,10 @@ public class UserRegistration extends AppCompatActivity {
                                     email.getText().toString(),
                                     bcryptPassword)
                     );
+
+                    //insert default profile image upon account creation
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.usericon);
+                    boolean insertImg = dabaseHelper.insertImage(bitmap, email.getText().toString());
 
                     if(isInserted) {
                         Toast.makeText(UserRegistration.this, "User added", Toast.LENGTH_SHORT).show();
