@@ -4,24 +4,31 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.douglaslist.DabaseHelper;
 import com.example.douglaslist.MainActivity;
 import com.example.douglaslist.R;
 
 public class UserProfile extends AppCompatActivity {
     SharedPreferences sp;
+    DabaseHelper dabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         User userProfile = (User) getIntent().getSerializableExtra("userData");
+
+        dabaseHelper = new DabaseHelper(this);
 
         //Check user session is valid
         SharedPreferences sp= getSharedPreferences("DouglasListUserSession", MODE_PRIVATE);
@@ -43,7 +50,12 @@ public class UserProfile extends AppCompatActivity {
         TextView username = findViewById(R.id.tvProfileUsername);
         username.setText("Username: "+ userProfile.getUsername());
 
+        //get profile image from Profile table
         ImageView profileImg = findViewById(R.id.ivProfileImg);
+        String storedImgEncoded = dabaseHelper.returnProfileImage(userProfile.getEmail());
+        byte[] decodeString = Base64.decode(storedImgEncoded,Base64.DEFAULT);
+        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.length);
+        profileImg.setImageBitmap(decodedBitmap);
 
         Button btnLogOut = findViewById(R.id.btnProfileLogout);
         btnLogOut.setOnClickListener(new View.OnClickListener() {

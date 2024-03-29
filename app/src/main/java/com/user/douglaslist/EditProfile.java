@@ -13,13 +13,18 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.douglaslist.DabaseHelper;
 import com.example.douglaslist.R;
+
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 
 public class EditProfile extends AppCompatActivity {
     ImageView ivImage;
@@ -34,15 +39,20 @@ public class EditProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        dabaseHelper = new DabaseHelper(EditProfile.this);
-
         User userProfile = (User) getIntent().getSerializableExtra("userData");
         String email = userProfile.getEmail();
 
+        dabaseHelper = new DabaseHelper(EditProfile.this);
+
+        //get profile image from Profile table
+        ivImage = findViewById(R.id.ivImageUpload);
+        String storedImgEncoded = dabaseHelper.returnProfileImage(email);
+        byte[] decodeString = Base64.decode(storedImgEncoded,Base64.DEFAULT);
+        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.length);
+        ivImage.setImageBitmap(decodedBitmap);
+
         btnUpload = findViewById(R.id.btnUploadPhoto);
         btnSave = findViewById(R.id.btnSavePhoto);
-
-        ivImage = findViewById(R.id.ivImageUpload);
 
         //Retrieve image from phone
         registerResult();
@@ -55,12 +65,32 @@ public class EditProfile extends AppCompatActivity {
                 BitmapDrawable bitmapDrawable = (BitmapDrawable)  ivImage.getDrawable();
                 Bitmap bitmap = bitmapDrawable.getBitmap();
 
-                boolean imgSaved = dabaseHelper.updateImage(bitmap, email);
-                if (imgSaved) {
-                    Toast.makeText(EditProfile.this, "Image Saved!", Toast.LENGTH_SHORT).show();
+
+                boolean imgSize = checkImgSize(bitmap);
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                String imgString = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                byte[] imgBytes = imgString.getBytes(StandardCharsets.UTF_8);
+                long byteSize = imgBytes.length;
+
+                //imgSizeTxt.setText("Image size is: "+ byteSize);
+
+                if (imgSize){
+                    boolean imgSaved = dabaseHelper.updateImage(bitmap, email);
+                    if (imgSaved) {
+                        Toast.makeText(EditProfile.this, "Image Saved!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(EditProfile.this, UserProfile.class);
+                        intent.putExtra("userData", userProfile);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(EditProfile.this, "ERROR: Image Not Saved!", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(EditProfile.this, "ERROR: Image Not Saved!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditProfile.this, "ERROR: Image is too big!", Toast.LENGTH_SHORT).show();
                 }
+
 
             }
         });
@@ -81,12 +111,24 @@ public class EditProfile extends AppCompatActivity {
                             Uri imageUri = result.getData().getData();
                             ivImage.setImageURI(imageUri);
                         }catch (Exception e){
-                            Toast.makeText(EditProfile.this, "Error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditProfile.this, "ERROR: Image could not be retrieved", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
         );
 
+    }
+
+    private boolean checkImgSize(Bitmap bitmap){
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        String imgString = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        byte[] imgBytes = imgString.getBytes(StandardCharsets.UTF_8);
+        long byteSize = imgBytes.length;
+        long maxSizeAllowed = 1_300_000;
+        boolean result = byteSize < maxSizeAllowed;
+        return result;
     }
 
 }

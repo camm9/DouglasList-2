@@ -245,4 +245,21 @@ public class DabaseHelper extends SQLiteOpenHelper {
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
+    public String returnProfileImage(String email){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[] storedImg = {"ProfileImage"};
+        String selection = "Email = ?";
+        String[] selectionArgs = { String.valueOf(email)};
+        Cursor cursor = db.query(PROFILE_TABLE, storedImg, selection,selectionArgs,null,null,null);
+        if (cursor.moveToFirst()){
+            String retrievedImg = cursor.getString(cursor.getColumnIndexOrThrow("ProfileImage"));
+            cursor.close();
+            return retrievedImg;
+        } else{
+            cursor.close();
+            return null;
+        }
+
+    }
+
 }
